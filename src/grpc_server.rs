@@ -17,12 +17,6 @@ use services::{
 #[derive(Default)]
 pub struct MyPaymentService {}
 
-#[derive(Default)]
-pub struct MyTransactionService {}
-
-#[derive(Default)]
-pub struct MyChatService {}
-
 #[tonic::async_trait]
 impl PaymentService for MyPaymentService {
     async fn process_payment(
@@ -36,6 +30,9 @@ impl PaymentService for MyPaymentService {
         Ok(Response::new(PaymentResponse { success: true }))
     }
 }
+
+#[derive(Default)]
+pub struct MyTransactionService {}
 
 #[tonic::async_trait]
 impl TransactionService for MyTransactionService {
@@ -76,6 +73,10 @@ impl TransactionService for MyTransactionService {
     }
 }
 
+#[derive(Default)]
+pub struct MyChatService {}
+
+#[tonic::async_trait]
 impl ChatService for MyChatService {
     type ChatStream = ReceiverStream<Result<ChatMessage, Status>>;
 
@@ -91,10 +92,7 @@ impl ChatService for MyChatService {
                 println!("Received message: {:?}", message);
                 let reply = ChatMessage {
                     user_id: message.user_id.clone(),
-                    message: format!(
-                        "Terima kasih telah melakukan chat kepada CS virtual, Pesan anda akan dibalas pada jam kerja. pesan anda : {}",
-                        message.message
-                    ),
+                    message: format!("Terima kasih telah melakukan chat kepada CS virtual, Pesan anda akan dibalas pada jam kerja. pesan anda : {}", message.message),
                 };
 
                 tx.send(Ok(reply)).await.unwrap_or_else(|_| {});
